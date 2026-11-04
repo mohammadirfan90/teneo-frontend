@@ -4,6 +4,7 @@ import { Logo } from "@/components/shared/logo"
 import { ROLE_HOME, ROLE_LABEL } from "@/lib/auth/roles"
 import type { Role } from "@/types/api"
 import { MobileNav } from "./mobile-nav"
+import { RoleGate } from "./role-gate"
 import { SidebarNav } from "./nav-links"
 import { SessionActions, SessionActionsFallback } from "./session-actions"
 import { ThemeToggle } from "./theme-toggle"
@@ -15,6 +16,9 @@ import { ThemeToggle } from "./theme-toggle"
 export function AppShell({ role, children }: { role: Role; children: ReactNode }) {
   return (
     <div className="flex min-h-svh flex-1">
+      <Suspense>
+        <RoleGate role={role} />
+      </Suspense>
       <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r bg-sidebar lg:flex">
         <div className="flex h-16 items-center px-5">
           <Logo href={ROLE_HOME[role]} />
