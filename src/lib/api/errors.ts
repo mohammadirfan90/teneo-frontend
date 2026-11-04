@@ -47,9 +47,5 @@ export function isApiError(e: unknown): e is ApiError {
 }
 
 export function isFailureBody(body: unknown): body is ApiFailure {
-  return (
-    typeof body === "object" &&
-    body !== null &&
-    (body as { success?: unknown }).success === false
-  )
+  return typeof body === "object" && body !== null && (body as { success?: unknown }).success === false
 }

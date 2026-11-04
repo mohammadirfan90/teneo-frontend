@@ -54,7 +54,11 @@ export function decodeUserHint(raw: string | undefined): UserHint | null {
 
 export function sessionCookieValues(auth: AuthResponse) {
   return [
-    { name: ACCESS_COOKIE, value: auth.accessToken, options: { ...base, maxAge: Math.max(60, auth.expiresIn - ACCESS_SKEW) } },
+    {
+      name: ACCESS_COOKIE,
+      value: auth.accessToken,
+      options: { ...base, maxAge: Math.max(60, auth.expiresIn - ACCESS_SKEW) },
+    },
     { name: REFRESH_COOKIE, value: auth.refreshToken, options: { ...base, maxAge: REFRESH_MAX_AGE } },
     { name: USER_COOKIE, value: encodeUserHint(auth.user), options: { ...base, maxAge: REFRESH_MAX_AGE } },
   ] as const

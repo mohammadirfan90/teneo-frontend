@@ -11,7 +11,13 @@ import type { AuthResponse } from "@/types/api"
  */
 
 const FORWARD_REQUEST_HEADERS = ["content-type", "idempotency-key", "x-correlation-id", "accept"]
-const FORWARD_RESPONSE_HEADERS = ["content-type", "content-disposition", "idempotent-replayed", "x-correlation-id", "retry-after"]
+const FORWARD_RESPONSE_HEADERS = [
+  "content-type",
+  "content-disposition",
+  "idempotent-replayed",
+  "x-correlation-id",
+  "retry-after",
+]
 const MAX_BODY_BYTES = 16 * 1024 * 1024
 
 type Ctx = RouteContext<"/api/proxy/[...path]">

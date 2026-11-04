@@ -43,7 +43,13 @@ async function request<T>(method: string, path: string, req: ClientRequest = {})
 
   let res: Response
   try {
-    res = await fetch(toUrl(path, req.query), { method, headers, body, signal: req.signal, credentials: "same-origin" })
+    res = await fetch(toUrl(path, req.query), {
+      method,
+      headers,
+      body,
+      signal: req.signal,
+      credentials: "same-origin",
+    })
   } catch (e) {
     if (e instanceof DOMException && e.name === "AbortError") throw e
     throw new ApiError(0, "You appear to be offline. Check your connection and try again.")
@@ -63,10 +69,14 @@ async function request<T>(method: string, path: string, req: ClientRequest = {})
 
 /** Browser-side API. Calls go through /api/proxy so tokens stay in HTTP-only cookies. */
 export const apiClient = {
-  get: <T>(path: string, query?: ClientQuery, signal?: AbortSignal) => request<T>("GET", path, { query, signal }),
-  post: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) => request<T>("POST", path, { ...opts, body }),
-  put: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) => request<T>("PUT", path, { ...opts, body }),
-  patch: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) => request<T>("PATCH", path, { ...opts, body }),
+  get: <T>(path: string, query?: ClientQuery, signal?: AbortSignal) =>
+    request<T>("GET", path, { query, signal }),
+  post: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) =>
+    request<T>("POST", path, { ...opts, body }),
+  put: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) =>
+    request<T>("PUT", path, { ...opts, body }),
+  patch: <T>(path: string, body?: unknown, opts?: Omit<ClientRequest, "body">) =>
+    request<T>("PATCH", path, { ...opts, body }),
   delete: <T>(path: string, opts?: Omit<ClientRequest, "body">) => request<T>("DELETE", path, opts),
   upload: <T>(path: string, formData: FormData, opts?: Omit<ClientRequest, "formData">) =>
     request<T>("POST", path, { ...opts, formData }),

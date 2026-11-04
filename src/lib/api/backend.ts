@@ -81,5 +81,8 @@ export async function backend<T>(path: string, req: BackendRequest = {}): Promis
   const { status, body } = await backendRaw<T>(path, req)
   if (body && body.success) return body.data
   if (isFailureBody(body)) throw ApiError.fromFailure(status, body)
-  throw new ApiError(status, status >= 500 ? "The service is unavailable." : "Unexpected response from the server.")
+  throw new ApiError(
+    status,
+    status >= 500 ? "The service is unavailable." : "Unexpected response from the server."
+  )
 }
