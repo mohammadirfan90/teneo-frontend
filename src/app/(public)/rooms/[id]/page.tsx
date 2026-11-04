@@ -111,7 +111,7 @@ async function RoomDetail({ params }: { params: Promise<{ id: string }> }) {
       {photos.length > 0 ? (
         <RoomGallery photos={photos} title={`${room.label} at ${property.title}`} />
       ) : (
-        <div className="flex aspect-[16/9] flex-col items-center justify-center gap-2 rounded-xl border border-dashed md:aspect-[16/5] bg-card text-subtle">
+        <div className="flex aspect-[16/9] flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-card text-subtle md:aspect-[16/5]">
           <ImageOff className="size-6" aria-hidden />
           <p className="text-sm">The owner hasn&apos;t added photos yet</p>
         </div>
