@@ -30,7 +30,9 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
     <div className="grid min-h-svh flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
       <div className="flex flex-col px-4 py-6 sm:px-10">
         <Logo />
-        <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">{children}</main>
+        <main id="main" className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
+          {children}
+        </main>
       </div>
       <aside className="hidden border-l bg-sidebar lg:flex lg:flex-col lg:justify-center lg:px-14">
         <div className="max-w-md">

@@ -5,7 +5,9 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
   return (
     <>
       <PublicHeader />
-      <div className="flex flex-1 flex-col">{children}</div>
+      <div id="main" className="flex flex-1 flex-col">
+        {children}
+      </div>
       <SiteFooter />
     </>
   )
