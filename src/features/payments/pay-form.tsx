@@ -28,19 +28,43 @@ interface IntentResponse {
   clientSecret: string
 }
 
+const keyStorage = (invoiceId: string) => `teneo:pay-key:${invoiceId}`
+
+function readKey(invoiceId: string): string | null {
+  try {
+    return localStorage.getItem(keyStorage(invoiceId))
+  } catch {
+    return null
+  }
+}
+
+function writeKey(invoiceId: string, key: string) {
+  try {
+    localStorage.setItem(keyStorage(invoiceId), key)
+  } catch {
+    // Storage unavailable (private mode): fall back to one intent per visit.
+  }
+}
+
 /**
- * One PaymentIntent per attempt. The backend wants the same uuid in the Idempotency-Key header
- * and the body; an empty clientSecret means that key was already used, so we retry with a new one.
+ * The backend wants the same uuid in the Idempotency-Key header and the body, and replays the
+ * original response (with its clientSecret) for 24 h. Reusing the key per invoice means revisiting
+ * this page resumes the same PaymentIntent instead of piling up abandoned ones. An empty
+ * clientSecret means the key can't be replayed, so we start over with a fresh one.
  */
-async function createIntent(invoiceId: string): Promise<IntentResponse> {
-  for (let tries = 0; tries < 2; tries++) {
-    const key = crypto.randomUUID()
+async function createIntent(invoiceId: string, fresh: boolean): Promise<IntentResponse> {
+  const stored = fresh ? null : readKey(invoiceId)
+  for (const key of [stored, crypto.randomUUID(), crypto.randomUUID()]) {
+    if (!key) continue
     const res = await apiClient.post<IntentResponse>(
       "/payments/stripe/intent",
       { invoiceId, idempotencyKey: key },
       { idempotencyKey: key }
     )
-    if (res.clientSecret) return res
+    if (res.clientSecret) {
+      writeKey(invoiceId, key)
+      return res
+    }
   }
   throw new Error("Stripe didn't return a payment session.")
 }
@@ -81,7 +105,7 @@ export function PayForm({
   const { resolvedTheme } = useTheme()
   const intent = useQuery({
     queryKey: ["stripe-intent", invoiceId, attempt],
-    queryFn: () => createIntent(invoiceId),
+    queryFn: () => createIntent(invoiceId, attempt > 0),
     enabled: Boolean(publishableKey),
     staleTime: Infinity,
     gcTime: 0,
