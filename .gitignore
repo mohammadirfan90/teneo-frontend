@@ -1,0 +1,7 @@
+# Local-only: assignment sources, agent context, helper scripts
+requirements/
+docs/context/
+AGENTS.md
+CLAUDE.md
+.claude/
+scripts/
