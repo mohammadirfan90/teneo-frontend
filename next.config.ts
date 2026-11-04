@@ -1,9 +1,13 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Room photos are uploaded by the backend to Cloudinary (public delivery).
+    remotePatterns: [new URL("https://res.cloudinary.com/**")],
+    formats: ["image/avif", "image/webp"],
+  },
   turbopack: {
     rules: {
       "*.css": {
