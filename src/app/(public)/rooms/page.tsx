@@ -5,12 +5,14 @@ import { Suspense } from "react"
 
 import { CursorPagination } from "@/components/shared/cursor-pagination"
 import { EmptyState } from "@/components/shared/empty-state"
+import { SaveSearchButton } from "@/components/shared/save-search-button"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getFacets, searchRooms, withCovers } from "@/features/rooms/data"
 import { activeFilterCount, parseRoomFilters, toSearchQuery } from "@/features/rooms/query"
 import { RoomCard, RoomCardSkeleton } from "@/features/rooms/room-card"
 import { RoomFilters } from "@/features/rooms/room-filters"
+import { getSessionHint } from "@/lib/api/server"
 import type { RawSearchParams } from "@/lib/search-params"
 
 export const metadata: Metadata = {
@@ -84,14 +86,25 @@ function ResultsSkeleton() {
   )
 }
 
+/** Saved searches belong to tenant accounts; reads cookies, so it streams inside <Suspense>. */
+async function TenantSaveSearch() {
+  const session = await getSessionHint()
+  return session?.role === "TENANT" ? <SaveSearchButton /> : null
+}
+
 export default function RoomsPage(props: PageProps<"/rooms">) {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-10">
-      <div>
-        <h1 className="text-[1.75rem] font-semibold sm:text-3xl">Find a room</h1>
-        <p className="mt-1.5 max-w-prose text-muted-foreground">
-          Every listing comes from an owner who passed identity checks. Rents are monthly, in taka.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-[1.75rem] font-semibold sm:text-3xl">Find a room</h1>
+          <p className="mt-1.5 max-w-prose text-muted-foreground">
+            Every listing comes from an owner who passed identity checks. Rents are monthly, in taka.
+          </p>
+        </div>
+        <Suspense>
+          <TenantSaveSearch />
+        </Suspense>
       </div>
       <Suspense fallback={<Skeleton className="h-[124px] rounded-xl" />}>
         <Filters />
