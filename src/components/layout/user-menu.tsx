@@ -2,7 +2,7 @@
 
 import { LayoutDashboard, LogOut, UserRound } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useTransition } from "react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -14,22 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { logoutAction } from "@/features/auth/actions"
 import { ROLE_LABEL, homeFor } from "@/lib/auth/roles"
 import { initials } from "@/lib/format"
 import type { Role } from "@/types/api"
 
 export function UserMenu({ email, role }: { email: string; role: Role | null }) {
-  const [signingOut, setSigningOut] = useState(false)
-
-  async function signOut() {
-    setSigningOut(true)
-    try {
-      await fetch("/api/auth/logout", { method: "POST" })
-    } finally {
-      // Full navigation clears the client router cache of signed-in pages.
-      window.location.replace("/login")
-    }
-  }
+  const [signingOut, startSignOut] = useTransition()
+  const signOut = () => startSignOut(() => logoutAction())
 
   const profileHref = role === "TENANT" ? "/dashboard/profile" : role === "OWNER" ? "/owner/profile" : null
 
@@ -69,7 +61,7 @@ export function UserMenu({ email, role }: { email: string; role: Role | null }) 
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault()
-            void signOut()
+            signOut()
           }}
           disabled={signingOut}
         >

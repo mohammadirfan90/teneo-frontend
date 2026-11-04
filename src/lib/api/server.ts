@@ -7,10 +7,10 @@ import { cache } from "react"
 import type { MeView } from "@/types/api"
 import { ACCESS_COOKIE, REFRESH_COOKIE, USER_COOKIE, decodeUserHint, type UserHint } from "@/lib/auth/cookies"
 import { backend, type BackendRequest } from "./backend"
+import { PATH_HEADER } from "./path-header"
 import { isApiError } from "./errors"
 
-/** Header set by proxy.ts so server code knows the URL being rendered. */
-export const PATH_HEADER = "x-teneo-path"
+export { PATH_HEADER }
 
 /**
  * Authenticated backend call for Server Components and Server Actions.
