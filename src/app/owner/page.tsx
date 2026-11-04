@@ -79,7 +79,7 @@ export default async function OwnerOverviewPage() {
           value={activeLeases}
           hint={awaitingSignature ? `${awaitingSignature} awaiting signature` : undefined}
           icon={FileSignature}
-          href="/owner/leases"
+          href={awaitingSignature ? "/owner/leases?status=DRAFT" : "/owner/leases"}
         />
         <StatCard
           label="Open maintenance"
