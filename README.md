@@ -6,19 +6,21 @@ both sign a digital lease, and rent, utilities and repairs are handled in one pl
 
 | | |
 |---|---|
-| Live frontend | _set after Vercel deploy_ |
-| Live API | _set after backend deploy_ |
+| Live frontend | https://teneo-frontend-alpha.vercel.app |
+| Live API | https://teneo-api.onrender.com |
 | Backend repo | https://github.com/mohammadirfan90/teneo |
 
 ## Demo accounts
 
 The login page has one-click **Quick demo login** buttons for each role. Credentials, if you prefer typing them:
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `demo@admin.local` | `Demo123!@#` |
-| Tenant | `tenant1@demo.local` | `Demo123!@#` |
-| Owner | `owner1@demo.local` | `Demo123!@#` |
+| Email | Password | Role | KYC |
+|---|---|---|---|
+| `demo@admin.local` | `Demo123!@#` | ADMIN | — |
+| `owner1@demo.local` | `Demo123!@#` | OWNER | APPROVED |
+| `owner2@demo.local` | `Demo123!@#` | OWNER | APPROVED |
+| `tenant1@demo.local` | `Demo123!@#` | TENANT | APPROVED |
+| `tenant2@demo.local` | `Demo123!@#` | TENANT | APPROVED |
 
 Stripe runs in **test mode** — pay invoices with card `4242 4242 4242 4242`, any future expiry, any CVC.
 
@@ -99,21 +101,3 @@ The API must allow this site's origin in `CORS_ORIGINS` only if the browser call
 all calls are server-to-server.
 
 Quality checks: `npm run typecheck`, `npx eslint src`, `npm run format:check`.
-
-## Deployment (Vercel)
-
-1. Import the repository in Vercel (framework preset: Next.js).
-2. Set `API_BASE_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` for Production.
-3. The API must be reachable from Vercel's build (public pages prerender live listings).
-4. Point the Stripe webhook of the API at `https://<api>/api/v1/payments/stripe/webhook`.
-
-## Assignment submission
-
-- Project name: Teneo — Housing & Roommate Platform
-- Frontend repo: https://github.com/mohammadirfan90/teneo-frontend
-- Backend repo: https://github.com/mohammadirfan90/teneo
-- Live frontend: _after deploy_
-- Live backend: _after deploy_
-- API documentation: Postman collection in the backend repo (`postman/`)
-- Demo video: _link_
-- Demo admin: `demo@admin.local` / `Demo123!@#`
