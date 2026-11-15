@@ -1,8 +1,9 @@
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight, Building2, Check } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Suspense } from "react"
 
+import { EmptyState } from "@/components/shared/empty-state"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FAQ_RENTERS, HOW_STEPS_RENTER } from "@/features/marketing/content"
@@ -39,6 +40,21 @@ async function FeaturedRoom() {
 
 async function NewestRooms() {
   const live = await getAllLiveRooms()
+  if (live.length === 0) {
+    return (
+      <EmptyState
+        icon={Building2}
+        title="No rooms are listed yet"
+        description="New listings appear here the moment a verified owner publishes them."
+        action={
+          <Button variant="outline" asChild>
+            <Link href="/owners">List your property</Link>
+          </Button>
+        }
+      />
+    )
+  }
+  // The newest room is already featured in the hero.
   const rooms = await withCovers(live.slice(1, 7))
   if (rooms.length === 0) return null
   return (
@@ -56,25 +72,30 @@ async function Areas() {
   const { areas } = await getFacets()
   if (areas.length === 0) return null
   return (
-    <ul className="flex flex-wrap gap-2">
-      {areas.map((a) => {
-        const params = new URLSearchParams({ city: a.city, ...(a.area ? { q: a.area } : {}) })
-        return (
-          <li key={`${a.city}-${a.area}`}>
-            <Link
-              href={`/rooms?${params}`}
-              className="inline-flex h-10 items-center gap-2 rounded-lg border bg-card px-3.5 text-sm transition-colors duration-150 hover:border-input hover:bg-muted"
-            >
-              <span className="font-medium">{a.area ?? a.city}</span>
-              {a.area && <span className="text-muted-foreground">{a.city}</span>}
-              <span className="rounded bg-surface-2 px-1.5 text-xs text-muted-foreground tabular-nums">
-                {a.count}
-              </span>
-            </Link>
-          </li>
-        )
-      })}
-    </ul>
+    <section aria-labelledby="areas" className="mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6">
+      <h2 id="areas" className="text-lg font-semibold">
+        Browse by area
+      </h2>
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {areas.map((a) => {
+          const params = new URLSearchParams({ city: a.city, ...(a.area ? { q: a.area } : {}) })
+          return (
+            <li key={`${a.city}-${a.area}`}>
+              <Link
+                href={`/rooms?${params}`}
+                className="inline-flex h-10 items-center gap-2 rounded-lg border bg-card px-3.5 text-sm transition-colors duration-150 hover:border-input hover:bg-muted"
+              >
+                <span className="font-medium">{a.area ?? a.city}</span>
+                {a.area && <span className="text-muted-foreground">{a.city}</span>}
+                <span className="rounded bg-surface-2 px-1.5 text-xs text-muted-foreground tabular-nums">
+                  {a.count}
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
   )
 }
 
@@ -157,16 +178,9 @@ export default function HomePage() {
         </Button>
       </section>
 
-      <section aria-labelledby="areas" className="mx-auto w-full max-w-7xl px-4 pb-14 sm:px-6">
-        <h2 id="areas" className="text-lg font-semibold">
-          Browse by area
-        </h2>
-        <div className="mt-4">
-          <Suspense fallback={<Skeleton className="h-10 w-2/3" />}>
-            <Areas />
-          </Suspense>
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <Areas />
+      </Suspense>
 
       <section aria-labelledby="how" className="border-y bg-card/60">
         <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">

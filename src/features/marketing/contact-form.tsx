@@ -43,7 +43,9 @@ export function ContactForm({ to }: { to: string }) {
   const onSubmit = form.handleSubmit((v) => {
     const subject = `[${v.topic}] Message from ${v.name}`
     const body = `${v.message}\n\n— ${v.name} (${v.email})`
-    window.location.assign(`mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`)
+    window.location.assign(
+      `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    )
     setSentTo(to)
   })
 
