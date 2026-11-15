@@ -3,7 +3,13 @@ import "server-only"
 import type { ApiEnvelope } from "@/types/api"
 import { ApiError, isFailureBody } from "./errors"
 
-export const API_BASE_URL = (process.env.API_BASE_URL ?? "http://localhost:4000/api/v1").replace(/\/$/, "")
+/** Accepts the API host with or without the `/api/v1` prefix (e.g. "https://api.example.com"). */
+function resolveApiBase(raw: string): string {
+  const base = raw.trim().replace(/\/+$/, "")
+  return /\/api\/v\d+$/.test(base) ? base : `${base}/api/v1`
+}
+
+export const API_BASE_URL = resolveApiBase(process.env.API_BASE_URL ?? "http://localhost:4000/api/v1")
 
 export type QueryValue = string | number | boolean | null | undefined
 export type Query = Record<string, QueryValue | QueryValue[]>

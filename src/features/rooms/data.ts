@@ -71,8 +71,17 @@ export async function getAllLiveRooms(): Promise<RoomSearchView[]> {
   "use cache"
   cacheLife("minutes")
   cacheTag("rooms")
-  const page = await backend<Page<RoomSearchView>>("/search/rooms", { query: { limit: 100, sort: "newest" } })
-  return page.items
+  try {
+    const page = await backend<Page<RoomSearchView>>("/search/rooms", {
+      query: { limit: 100, sort: "newest" },
+    })
+    return page.items
+  } catch (e) {
+    // Prerendered pages (home, sitemap) must not fail the build when the API is cold or
+    // unreachable; they render the empty state and refresh with the cache (1 min).
+    console.error("getAllLiveRooms failed", e instanceof Error ? e.message : e)
+    return []
+  }
 }
 
 export interface AreaFacet {
