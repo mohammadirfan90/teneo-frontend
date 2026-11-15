@@ -24,7 +24,8 @@ export function formatDate(value: string | null | undefined, opts: Intl.DateTime
     day: "numeric",
     month: "short",
     year: "numeric",
-    ...(dateOnly ? { timeZone: "UTC" } : {}),
+    // Fixed zones so server (UTC on Vercel) and browser render identical text (no hydration mismatch).
+    timeZone: dateOnly ? "UTC" : "Asia/Dhaka",
     ...opts,
   }).format(d)
 }
